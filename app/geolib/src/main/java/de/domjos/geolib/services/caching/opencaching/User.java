@@ -7,7 +7,7 @@ import de.domjos.geolib.services.caching.interfaces.IUser;
 public class User implements IUser {
 
     @SerializedName("uuid")
-    private long id;
+    private String id;
 
     @SerializedName("username")
     private String userName;
@@ -20,18 +20,18 @@ public class User implements IUser {
 
     private byte[] profilePic;
 
-    public User(long id, String userName) {
+    public User(String id, String userName) {
         this.id = id;
         this.userName = userName;
     }
 
     @Override
-    public long id() {
+    public String getId() {
         return this.id;
     }
 
     @Override
-    public void setId(long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

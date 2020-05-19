@@ -27,7 +27,15 @@
     <string name="sys_save">Save</string>
 
     <!-- Data for Open-Caching -->
-    <string name="open_caching_url">http://www.opencaching.us</string>
+    <string name="open_caching_url">https://www.opencaching.</string>
+    <string-array name="open_caching_locale">
+        <item>de</item>
+        <item>us</item>
+        <item>pl</item>
+        <item>nl</item>
+        <item>ro</item>
+        <item>uk</item>
+    </string-array>
     <string name="open_caching_key">JGS7qbCgXD3vjswmJHae</string>
 
     <!-- Messages -->

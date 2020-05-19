@@ -7,6 +7,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Spinner;
 
 import org.osmdroid.bonuspack.location.GeocoderNominatim;
@@ -35,10 +36,11 @@ import retrofit2.internal.EverythingIsNonNull;
 
 public class LoginFragment extends AbstractFragment<LoginViewModel> {
     private ImageButton cmdLoginHome, cmdLoginSave, cmdLoginAddress;
+    private ImageView ivLoginTest;
     private Button cmdLoginTest;
 
-    private Spinner spLoginService;
-    private ArrayAdapter<String> services;
+    private Spinner spLoginService, spLoginLocale;
+    private ArrayAdapter<String> services, locale;
     private EditText txtLoginUserName, txtLoginPassword, txtLoginAddress, txtLoginLongitude, txtLoginLatitude;
     private MapView mvLoginHome;
     private Activity activity;
@@ -51,16 +53,24 @@ public class LoginFragment extends AbstractFragment<LoginViewModel> {
     protected void initControls() {
         this.activity = this.requireActivity();
 
+        this.ivLoginTest = super.root.findViewById(R.id.ivLoginTest);
         this.cmdLoginHome = super.root.findViewById(R.id.cmdLoginPosition);
         this.cmdLoginAddress = super.root.findViewById(R.id.cmdLoginAddress);
         this.cmdLoginSave = super.root.findViewById(R.id.cmdLoginSave);
         this.cmdLoginAddress = super.root.findViewById(R.id.cmdLoginAddress);
         this.cmdLoginTest = super.root.findViewById(R.id.cmdLoginTest);
 
+        this.spLoginLocale = super.root.findViewById(R.id.spLoginLanguage);
+        this.locale = new ArrayAdapter<>(this.activity, android.R.layout.simple_spinner_item, this.getResources().getStringArray(R.array.open_caching_locale));
+        this.spLoginLocale.setAdapter(this.locale);
+        this.locale.notifyDataSetChanged();
+
         this.spLoginService = super.root.findViewById(R.id.spLoginService);
         this.services = new ArrayAdapter<>(this.activity, android.R.layout.simple_spinner_item);
         this.spLoginService.setAdapter(this.services);
         this.services.notifyDataSetChanged();
+
+
 
         this.spLoginService.setAdapter(this.services);
         this.services.notifyDataSetChanged();
@@ -99,6 +109,7 @@ public class LoginFragment extends AbstractFragment<LoginViewModel> {
             super.model.getUserName().setValue(this.txtLoginUserName.getText().toString());
             super.model.getPassword().setValue(this.txtLoginPassword.getText().toString());
             super.model.getService().setValue(this.spLoginService.getSelectedItem().toString());
+            super.model.getLocale().setValue(this.spLoginLocale.getSelectedItem().toString());
             super.model.getAddress().setValue(this.txtLoginAddress.getText().toString());
             super.model.getGeoPoint().setValue((GeoPoint) this.mvLoginHome.getMapCenter());
             super.model.saveSettings();
@@ -114,19 +125,33 @@ public class LoginFragment extends AbstractFragment<LoginViewModel> {
 
         this.cmdLoginTest.setOnClickListener(event -> {
             if(this.spLoginService.getSelectedItem().toString().equals(Objects.requireNonNull(super.model.getServices().getValue()).get(1))) {
-                OpenCaching openCaching = RetrofitInstance.getRetrofitInstance(this.getString(R.string.open_caching_url)).create(OpenCaching.class);
-                Call<List<User>> call = openCaching.getUsers(this.getString(R.string.open_caching_key), this.txtLoginUserName.getText().toString());
-                call.enqueue(new Callback<List<User>>() {
+                OpenCaching openCaching = RetrofitInstance.getRetrofitInstance(this.getString(R.string.open_caching_url) + this.spLoginLocale.getSelectedItem().toString()).create(OpenCaching.class);
+                Call<User> call = openCaching.getUsers(this.getString(R.string.open_caching_key), this.txtLoginUserName.getText().toString());
+                call.enqueue(new Callback<User>() {
                     @Override
                     @EverythingIsNonNull
-                    public void onResponse( Call<List<User>> call, Response<List<User>> response) {
-                        MessageHelper.printMessage(Objects.requireNonNull(response.body()).toString(), R.mipmap.ic_launcher_round, LoginFragment.this.activity);
+                    public void onResponse(Call<User> call, Response<User> response) {
+                        try {
+                            User user = response.body();
+                            if(user != null) {
+                                if(!user.getUserName().trim().isEmpty()) {
+                                    ivLoginTest.setImageDrawable(requireContext().getDrawable(R.drawable.ic_check_black_24dp));
+                                } else {
+                                    ivLoginTest.setImageDrawable(requireContext().getDrawable(R.drawable.ic_close_black_24dp));
+                                }
+                            } else {
+                                ivLoginTest.setImageDrawable(requireContext().getDrawable(R.drawable.ic_close_black_24dp));
+                            }
+                        } catch (Exception ex) {
+                            MessageHelper.printException(ex, R.mipmap.ic_launcher_round, LoginFragment.this.activity);
+                            ivLoginTest.setImageDrawable(requireContext().getDrawable(R.drawable.ic_close_black_24dp));
+                        }
                     }
 
                     @Override
                     @EverythingIsNonNull
-                    public void onFailure(Call<List<User>> call, Throwable t) {
-
+                    public void onFailure(Call<User> call, Throwable t) {
+                        ivLoginTest.setImageDrawable(requireContext().getDrawable(R.drawable.ic_close_black_24dp));
                     }
                 });
             }
@@ -141,6 +166,7 @@ public class LoginFragment extends AbstractFragment<LoginViewModel> {
         super.model.getUserName().observe(getViewLifecycleOwner(), s -> this.txtLoginUserName.setText(s));
         super.model.getPassword().observe(getViewLifecycleOwner(), s -> this.txtLoginPassword.setText(s));
         super.model.getService().observe(getViewLifecycleOwner(), s -> this.spLoginService.setSelection(this.services.getPosition(s)));
+        super.model.getLocale().observe(getViewLifecycleOwner(), s -> this.spLoginLocale.setSelection(this.locale.getPosition(s)));
         super.model.getAddress().observe(getViewLifecycleOwner(), s -> this.txtLoginAddress.setText(s));
         super.model.getGeoPoint().observe(getViewLifecycleOwner(), s -> {
             if(s != null) {
