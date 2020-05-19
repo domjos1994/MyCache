@@ -33,9 +33,11 @@ public class MapHelper {
         } else {
             GeoHelper helper = new GeoHelper(activity);
             if(helper.canGetLocation()) {
-                GeoPoint home = new GeoPoint(helper.getLocation().getLatitude(), helper.getLocation().getLongitude());
-                mapController.setCenter(home);
-                return home;
+                if(helper.getLocation() != null) {
+                    GeoPoint home = new GeoPoint(helper.getLocation().getLatitude(), helper.getLocation().getLongitude());
+                    mapController.setCenter(home);
+                    return home;
+                }
             }
         }
         return null;

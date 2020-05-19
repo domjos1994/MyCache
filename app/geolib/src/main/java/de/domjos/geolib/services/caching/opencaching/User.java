@@ -74,4 +74,8 @@ public class User implements IUser {
     public void setHomeLatitude(double latitude) {
         this.latitude = latitude;
     }
+
+    public Object getHome() {
+        return this.home;
+    }
 }
