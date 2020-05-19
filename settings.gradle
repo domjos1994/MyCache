@@ -1,0 +1,3 @@
+rootProject.name='MyCache'
+include ':app'
+include ':app:geolib'

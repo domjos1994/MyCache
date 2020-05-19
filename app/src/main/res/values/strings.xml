@@ -1,0 +1,36 @@
+<resources>
+    <string name="app_name">MyCache</string>
+
+    <!-- Main-Screen -->
+    <string name="main_connected_not">Not Connected!</string>
+
+    <string name="menMainSettings">Settings</string>
+
+    <string name="navMainHome">Map</string>
+    <string name="navMainLogin">Account</string>
+
+
+    <!-- Login-Screen -->
+    <string name="login_user">User-Name</string>
+    <string name="login_pwd">Password</string>
+    <string name="login_service">Service</string>
+    <string name="login_test">Test Connection!</string>
+    <string name="login_address">Address</string>
+    <string name="login_home">Home-Location</string>
+
+
+    <!-- Geo-Data -->
+    <string name="geo_longitude">Longitude</string>
+    <string name="geo_latitude">Latitude</string>
+
+    <!-- General-Data -->
+    <string name="sys_save">Save</string>
+
+    <!-- Data for Open-Caching -->
+    <string name="open_caching_url">http://www.opencaching.us</string>
+    <string name="open_caching_key">JGS7qbCgXD3vjswmJHae</string>
+
+    <!-- Messages -->
+    <string name="msg_save_success">Data saved successfully</string>
+    <string name="msg_load_data">Load Data!</string>
+</resources>

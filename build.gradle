@@ -1,0 +1,67 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+// general
+ext.propAppVersionCode = 1
+ext.propAppVersionName = "1.0-alpha.1"
+
+ext.propCompileVersion = 29
+ext.propBuildToolsVersion = "29.0.2"
+ext.propMinVersion = 23
+
+// android
+ext.propAppCompatVersion = "1.1.0"
+ext.propPreferenceVersion = "1.1.1"
+
+// testing
+ext.propJUnitVersion = "4.13"
+ext.propExtJUnitVersion = "1.1.1"
+ext.propEspressoVersion = "3.2.0"
+
+// external Libraries
+ext.propOSMDroidVersion = "6.1.6"
+ext.propOSMBonusVersion = "6.6.0"
+ext.propRetrofitVersion = "2.8.2"
+
+// customWidgets
+ext.propCustomWidgetsPropertiesPath = "../Libraries/customwidgets/github.properties"
+ext.propCustomWidgetsVersion = "3.4.0"
+
+buildscript {
+    
+    repositories {
+        google()
+        jcenter()
+        
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.6.3'
+        
+
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
+}
+
+
+def githubProperties = new Properties()
+githubProperties.load(new FileInputStream(new File(projectDir, ext.propCustomWidgetsPropertiesPath)))
+
+allprojects {
+    repositories {
+        google()
+        jcenter()
+        maven { url "https://jitpack.io" }
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/domjos1994/Customwidgets")
+            credentials {
+                username = githubProperties['gpr.usr']
+                password = githubProperties['gpr.key']
+            }
+        }
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}

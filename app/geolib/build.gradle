@@ -1,0 +1,43 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion propCompileVersion
+    buildToolsVersion propBuildToolsVersion
+
+    defaultConfig {
+        minSdkVersion propMinVersion
+        targetSdkVersion propCompileVersion
+        versionCode propAppVersionCode
+        versionName propAppVersionName
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles 'consumer-rules.pro'
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    // android
+    implementation "androidx.preference:preference:${propPreferenceVersion}"
+    implementation "androidx.appcompat:appcompat:${propAppCompatVersion}"
+
+    // external libraries
+    implementation "org.osmdroid:osmdroid-android:${propOSMDroidVersion}"
+    implementation "com.github.MKergall:osmbonuspack:${propOSMBonusVersion}"
+    implementation "com.squareup.retrofit2:retrofit:${propRetrofitVersion}"
+    implementation "com.squareup.retrofit2:converter-gson:${propRetrofitVersion}"
+    implementation "de.domjos:customwidgets:${propCustomWidgetsVersion}"
+
+    testImplementation "junit:junit:${propJUnitVersion}"
+    androidTestImplementation "androidx.test.ext:junit:${propExtJUnitVersion}"
+    androidTestImplementation "androidx.test.espresso:espresso-core:${propEspressoVersion}"
+}
