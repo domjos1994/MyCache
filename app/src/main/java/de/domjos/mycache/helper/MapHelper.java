@@ -1,4 +1,4 @@
-package de.domjos.geolib.helper;
+package de.domjos.mycache.helper;
 
 import android.app.Activity;
 import androidx.preference.PreferenceManager;

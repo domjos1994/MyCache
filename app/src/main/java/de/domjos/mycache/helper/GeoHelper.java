@@ -1,4 +1,4 @@
-package de.domjos.geolib.helper;
+package de.domjos.mycache.helper;
 
 import android.Manifest;
 import android.content.Context;

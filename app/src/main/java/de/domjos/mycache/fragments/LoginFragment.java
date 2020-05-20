@@ -3,6 +3,7 @@ package de.domjos.mycache.fragments;
 import android.app.Activity;
 import android.location.Address;
 import android.location.Location;
+import android.webkit.WebView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -10,6 +11,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
 
+import org.jetbrains.annotations.NotNull;
 import org.osmdroid.bonuspack.location.GeocoderNominatim;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.events.MapEventsReceiver;
@@ -22,23 +24,27 @@ import java.util.Objects;
 
 import de.domjos.customwidgets.model.tasks.AbstractTask;
 import de.domjos.customwidgets.utils.MessageHelper;
-import de.domjos.geolib.helper.MapHelper;
-import de.domjos.geolib.services.caching.RetrofitInstance;
-import de.domjos.geolib.services.caching.opencaching.OpenCaching;
-import de.domjos.geolib.services.caching.opencaching.User;
+import de.domjos.mycache.activities.MainActivity;
+import de.domjos.mycache.helper.MapHelper;
+import de.domjos.mycache.services.caching.opencaching.OpenCaching;
+import de.domjos.mycache.services.caching.opencaching.User;
+import de.domjos.mycache.services.general.OAuthTask;
 import de.domjos.mycache.R;
 import de.domjos.mycache.model.custom.AbstractFragment;
 import de.domjos.mycache.model.viewModel.LoginViewModel;
+import de.domjos.mycache.services.general.RetrofitInstance;
+import oauth.signpost.OAuthConsumer;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.internal.EverythingIsNonNull;
+import se.akerfeldt.okhttp.signpost.OkHttpOAuthConsumer;
 
 public class LoginFragment extends AbstractFragment<LoginViewModel> {
     private ImageButton cmdLoginHome, cmdLoginSave, cmdLoginAddress;
     private ImageView ivLoginTest;
     private Button cmdLoginTest;
 
+    private WebView wvLoginAuth;
     private Spinner spLoginService, spLoginLocale;
     private ArrayAdapter<String> services, locale;
     private EditText txtLoginUserName, txtLoginPassword, txtLoginAddress, txtLoginLongitude, txtLoginLatitude;
@@ -53,6 +59,7 @@ public class LoginFragment extends AbstractFragment<LoginViewModel> {
     protected void initControls() {
         this.activity = this.requireActivity();
 
+        this.wvLoginAuth = super.root.findViewById(R.id.wvLoginAuth);
         this.ivLoginTest = super.root.findViewById(R.id.ivLoginTest);
         this.cmdLoginHome = super.root.findViewById(R.id.cmdLoginPosition);
         this.cmdLoginAddress = super.root.findViewById(R.id.cmdLoginAddress);
@@ -125,35 +132,36 @@ public class LoginFragment extends AbstractFragment<LoginViewModel> {
 
         this.cmdLoginTest.setOnClickListener(event -> {
             if(this.spLoginService.getSelectedItem().toString().equals(Objects.requireNonNull(super.model.getServices().getValue()).get(1))) {
-                OpenCaching openCaching = RetrofitInstance.getRetrofitInstance(this.getString(R.string.open_caching_url) + this.spLoginLocale.getSelectedItem().toString()).create(OpenCaching.class);
-                Call<User> call = openCaching.getUsers(this.getString(R.string.open_caching_key), this.txtLoginUserName.getText().toString());
-                call.enqueue(new Callback<User>() {
-                    @Override
-                    @EverythingIsNonNull
-                    public void onResponse(Call<User> call, Response<User> response) {
-                        try {
-                            User user = response.body();
-                            if(user != null) {
-                                if(!user.getUserName().trim().isEmpty()) {
-                                    ivLoginTest.setImageDrawable(requireContext().getDrawable(R.drawable.ic_check_black_24dp));
-                                } else {
-                                    ivLoginTest.setImageDrawable(requireContext().getDrawable(R.drawable.ic_close_black_24dp));
-                                }
-                            } else {
-                                ivLoginTest.setImageDrawable(requireContext().getDrawable(R.drawable.ic_close_black_24dp));
-                            }
-                        } catch (Exception ex) {
-                            MessageHelper.printException(ex, R.mipmap.ic_launcher_round, LoginFragment.this.activity);
-                            ivLoginTest.setImageDrawable(requireContext().getDrawable(R.drawable.ic_close_black_24dp));
-                        }
-                    }
+                try {
+                    OAuthTask OAuthTask = new OAuthTask(this.activity, this.wvLoginAuth);
+                    OAuthTask.after((AbstractTask.PostExecuteListener<OkHttpOAuthConsumer>) consumer -> {
+                        MainActivity.GLOBALS.setConsumer(consumer);
 
-                    @Override
-                    @EverythingIsNonNull
-                    public void onFailure(Call<User> call, Throwable t) {
-                        ivLoginTest.setImageDrawable(requireContext().getDrawable(R.drawable.ic_close_black_24dp));
-                    }
-                });
+                        String baseUrl = this.getString(R.string.open_caching_url);
+                        String locale = this.spLoginLocale.getSelectedItem().toString();
+
+                        OpenCaching openCaching = RetrofitInstance.getRetrofitInstance(baseUrl + locale).create(OpenCaching.class);
+                        openCaching.getUsers("uuid|username|home_location", MainActivity.GLOBALS.getOcPublicKey(), this.txtLoginUserName.getText().toString()).enqueue(new Callback<User>() {
+                            @Override
+                            public void onResponse(@NotNull Call<User> call,@NotNull  Response<User> response) {
+                                User user = response.body();
+                                assert user != null;
+                                if(user.getHome() != null) {
+                                    ivLoginTest.setImageDrawable(activity.getDrawable(R.drawable.ic_check_black_24dp));
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(@NotNull Call<User> call, @NotNull Throwable t) {
+                                MessageHelper.printMessage(t.getMessage(), R.mipmap.ic_launcher_round, activity);
+                            }
+                        });
+                    });
+                    OAuthTask.execute();
+
+                } catch (Exception ex) {
+                    MessageHelper.printException(ex, R.mipmap.ic_launcher_round, this.activity);
+                }
             }
         });
     }

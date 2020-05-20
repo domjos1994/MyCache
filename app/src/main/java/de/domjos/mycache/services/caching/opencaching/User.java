@@ -1,8 +1,8 @@
-package de.domjos.geolib.services.caching.opencaching;
+package de.domjos.mycache.services.caching.opencaching;
 
 import com.google.gson.annotations.SerializedName;
 
-import de.domjos.geolib.services.caching.interfaces.IUser;
+import de.domjos.mycache.services.caching.interfaces.IUser;
 
 public class User implements IUser {
 

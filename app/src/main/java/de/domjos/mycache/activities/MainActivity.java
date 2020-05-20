@@ -5,6 +5,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
 import android.view.Menu;
+import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -22,11 +23,16 @@ import androidx.appcompat.widget.Toolbar;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 import de.domjos.customwidgets.model.AbstractActivity;
+import de.domjos.customwidgets.model.tasks.AbstractTask;
 import de.domjos.customwidgets.utils.MessageHelper;
 import de.domjos.mycache.R;
+import de.domjos.mycache.model.viewModel.LoginViewModel;
+import de.domjos.mycache.services.general.OAuthTask;
 import de.domjos.mycache.settings.Globals;
+import se.akerfeldt.okhttp.signpost.OkHttpOAuthConsumer;
 
 public class MainActivity extends AbstractActivity {
     private AppBarConfiguration mAppBarConfiguration;
@@ -48,6 +54,9 @@ public class MainActivity extends AbstractActivity {
     protected void initControls() {
         try {
             MainActivity.GLOBALS.setSettings(this.getApplicationContext());
+            MainActivity.GLOBALS.setOcPublicKey(this.getString(R.string.open_caching_key));
+            MainActivity.GLOBALS.setOcSecretKey(this.getString(R.string.open_caching_key_secret));
+            this.initAccessToken(this.findViewById(R.id.wvMainAuth));
         } catch (Exception ex) {
             MessageHelper.printException(ex, R.mipmap.ic_launcher_round, this);
         }
@@ -116,6 +125,16 @@ public class MainActivity extends AbstractActivity {
             }
         } catch (Exception ex) {
             MessageHelper.printException(ex, R.mipmap.ic_launcher_round, act);
+        }
+    }
+
+    private void initAccessToken(WebView webView) {
+        LoginViewModel loginViewModel = new LoginViewModel();
+        loginViewModel.getSettings();
+        if(Objects.requireNonNull(loginViewModel.getService().getValue()).equals(Objects.requireNonNull(loginViewModel.getServices().getValue()).get(1))) {
+            OAuthTask helper = new OAuthTask(this, webView);
+            helper.after((AbstractTask.PostExecuteListener<OkHttpOAuthConsumer>) MainActivity.GLOBALS::setConsumer);
+            helper.execute();
         }
     }
 }

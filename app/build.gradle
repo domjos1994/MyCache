@@ -42,15 +42,17 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
 
     // external libraries
+    implementation "de.domjos:customwidgets:${propCustomWidgetsVersion}"
     implementation "org.osmdroid:osmdroid-android:${propOSMDroidVersion}"
     implementation "com.github.MKergall:osmbonuspack:${propOSMBonusVersion}"
     implementation "com.squareup.retrofit2:retrofit:${propRetrofitVersion}"
     implementation "com.squareup.retrofit2:converter-gson:${propRetrofitVersion}"
-    implementation "de.domjos:customwidgets:${propCustomWidgetsVersion}"
+    implementation "oauth.signpost:signpost-core:${propSignPostVersion}"
+    implementation 'se.akerfeldt:okhttp-signpost:1.1.0'
+    implementation 'com.squareup.okhttp3:okhttp:4.7.1'
 
     // test libraries
     testImplementation "junit:junit:${propJUnitVersion}"
     androidTestImplementation "androidx.test.ext:junit:${propExtJUnitVersion}"
     androidTestImplementation "androidx.test.espresso:espresso-core:${propEspressoVersion}"
-    implementation project(path: ':app:geolib')
 }

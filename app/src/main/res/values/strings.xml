@@ -37,6 +37,7 @@
         <item>uk</item>
     </string-array>
     <string name="open_caching_key">JGS7qbCgXD3vjswmJHae</string>
+    <string name="open_caching_key_secret">MWEZjgTF3kgxTm2N3C32NHdsPMgQyCr5cYAnprDp</string>
 
     <!-- Messages -->
     <string name="msg_save_success">Data saved successfully</string>

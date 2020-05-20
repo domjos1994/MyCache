@@ -1,4 +1,4 @@
-package de.domjos.geolib.services.caching.interfaces;
+package de.domjos.mycache.services.caching.interfaces;
 
 public interface IUser {
 
