@@ -56,7 +56,6 @@ public class MainActivity extends AbstractActivity {
             MainActivity.GLOBALS.setSettings(this.getApplicationContext());
             MainActivity.GLOBALS.setOcPublicKey(this.getString(R.string.open_caching_key));
             MainActivity.GLOBALS.setOcSecretKey(this.getString(R.string.open_caching_key_secret));
-            this.initAccessToken(this.findViewById(R.id.wvMainAuth));
         } catch (Exception ex) {
             MessageHelper.printException(ex, R.mipmap.ic_launcher_round, this);
         }
@@ -125,16 +124,6 @@ public class MainActivity extends AbstractActivity {
             }
         } catch (Exception ex) {
             MessageHelper.printException(ex, R.mipmap.ic_launcher_round, act);
-        }
-    }
-
-    private void initAccessToken(WebView webView) {
-        LoginViewModel loginViewModel = new LoginViewModel();
-        loginViewModel.getSettings();
-        if(Objects.requireNonNull(loginViewModel.getService().getValue()).equals(Objects.requireNonNull(loginViewModel.getServices().getValue()).get(1))) {
-            OAuthTask helper = new OAuthTask(this, webView);
-            helper.after((AbstractTask.PostExecuteListener<OkHttpOAuthConsumer>) MainActivity.GLOBALS::setConsumer);
-            helper.execute();
         }
     }
 }

@@ -42,4 +42,8 @@
     <!-- Messages -->
     <string name="msg_save_success">Data saved successfully</string>
     <string name="msg_load_data">Load Data!</string>
+
+    <!-- Tasks -->
+    <string name="task_cache_load">Load Caches</string>
+    <string name="task_cache_load_content">Load Caches from Position!</string>
 </resources>

@@ -7,5 +7,14 @@
     android:layout_height="match_parent"
     tools:context=".fragments.HomeFragment">
 
+    <org.osmdroid.views.MapView
+        android:id="@+id/mvHomeMap"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
+    <WebView
+        android:id="@+id/wvMainAuth"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 </RelativeLayout>

@@ -15,14 +15,12 @@ public class User implements IUser {
     @SerializedName("home_location")
     private Object home;
 
-    private double longitude;
-    private double latitude;
-
     private byte[] profilePic;
 
-    public User(String id, String userName) {
+    public User(String id, String userName, String home) {
         this.id = id;
         this.userName = userName;
+        this.home = home;
     }
 
     @Override
@@ -57,22 +55,32 @@ public class User implements IUser {
 
     @Override
     public double getHomeLongitude() {
-        return this.longitude;
+        if(this.home != null) {
+            if(this.home.toString().contains("|")) {
+                return Double.parseDouble(this.home.toString().split("\\|")[1]);
+            }
+        }
+        return 0;
     }
 
     @Override
     public void setHomeLongitude(double longitude) {
-        this.longitude = longitude;
+        // nothing to do here
     }
 
     @Override
     public double getHomeLatitude() {
-        return this.latitude;
+        if(this.home != null) {
+            if(this.home.toString().contains("|")) {
+                return Double.parseDouble(this.home.toString().split("\\|")[0]);
+            }
+        }
+        return 0;
     }
 
     @Override
     public void setHomeLatitude(double latitude) {
-        this.latitude = latitude;
+        // nothing to do here
     }
 
     public Object getHome() {

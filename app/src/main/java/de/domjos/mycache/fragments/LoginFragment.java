@@ -33,7 +33,7 @@ import de.domjos.mycache.R;
 import de.domjos.mycache.model.custom.AbstractFragment;
 import de.domjos.mycache.model.viewModel.LoginViewModel;
 import de.domjos.mycache.services.general.RetrofitInstance;
-import oauth.signpost.OAuthConsumer;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;

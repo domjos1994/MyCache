@@ -1,5 +1,6 @@
 package de.domjos.mycache.model.custom;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +18,7 @@ public abstract class AbstractFragment<T extends ViewModel> extends Fragment {
     protected View root;
     protected T model;
     private Class<T> cls;
+    protected Activity activity;
 
     public AbstractFragment(int layout_id) {
         this.layout_id = layout_id;
@@ -27,6 +29,7 @@ public abstract class AbstractFragment<T extends ViewModel> extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         this.model = new ViewModelProvider(this).get(this.cls);
         this.root = inflater.inflate(this.layout_id, container, false);
+        this.activity = this.requireActivity();
         this.initControls();
         this.initActions();
         this.initViewModel();
