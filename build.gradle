@@ -21,9 +21,10 @@ ext.propEspressoVersion = "3.2.0"
 ext.propOSMDroidVersion = "6.1.6"
 ext.propOSMBonusVersion = "6.6.0"
 ext.propRetrofitVersion = "2.8.2"
+ext.propSignPostVersion = "2.1.1"
 
 // customWidgets
-ext.propCustomWidgetsPropertiesPath = "../Libraries/customwidgets/github.properties"
+ext.propCustomWidgetsPropertiesPath = "../Libraries/customwidgets/credentials/github.properties"
 ext.propCustomWidgetsVersion = "3.4.0"
 
 buildscript {
